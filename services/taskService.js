@@ -91,7 +91,7 @@ const addTask = async d => {
 //     } catch (e) { throw new Error("Get Task Error: " + e?.message); }
 // };
 const getTask = async (d) => {
-    console.log("my task called", d);
+    // console.log("my task called", d);
 
     try {
         let filter = [];
@@ -115,9 +115,9 @@ const getTask = async (d) => {
         const page = parseInt(d.page) || 0;
         const offset = page * limit;
 
-        command += ` ORDER BY task.createdAt DESC LIMIT ${limit} OFFSET ${offset}`;
+        command += ` ORDER BY task.task_id DESC LIMIT ${limit} OFFSET ${offset}`;
 
-        console.log("Final SQL command with pagination:", command);
+        // console.log("Final SQL command with pagination:", command);
 
 
         let result = await execCommand.execCommand(command);
@@ -130,10 +130,32 @@ const getTask = async (d) => {
 
         let countResult = await execCommand.execCommand(countCommand);
         const total = countResult[0]?.total || 0;
+        let selectionResult = {}
+
+        // if (filter.selection) {
+
+
+        for (let index = 0; index < result.length; index++) {
+            const element = result[index];
+            let category = element.category
+            if (!selectionResult[category]) {
+                selectionResult[category] = []
+            }
+            selectionResult[category].push(element);
+
+
+
+            // let dataDump=result.reduce((cur,index)=>{
+
+            // },{})
+
+
+        }
 
         return {
             data: result,
             totalRecords: total,
+            grouped: selectionResult,
         };
     } catch (e) {
         throw new Error("Get Task Error: " + e?.message);
@@ -148,16 +170,42 @@ const deleteTask = async d => {
     } catch (e) { throw new Error("Delete Task Error: " + e?.message); }
 };
 const updateTask = async d => {
+    console.log("updt dt", d);
+    let command = ""
     try {
         let updates = [];
         if (d.taskname) updates.push(`task_name='${d.taskname}'`);
         if (d.assignto) updates.push(`assignedTo='${d.assignto.id}'`);
-        if (d.category) updates.push(`category='${d.category.name}'`);
+        if (d.category) updates.push(`category='${d.category}'`);
         if (d.status) updates.push(`work_status='${d.status}'`);
         if (d.duedate) updates.push(`dueDate='${d.duedate}'`);
         if (d.description) updates.push(`work_description='${d.description}'`);
         const where = d.id ? ` WHERE task_id='${d.id}'` : '';
-        return await execCommand.execCommand(`UPDATE task SET ${updates.join(', ')}${where}`);
+        command = `UPDATE task SET ${updates.join(', ')}${where}`
+        let result = await execCommand.execCommand(command)
+        // console.log("Update Command", command);
+
+        return result;
     } catch (e) { throw new Error("Update Task Error: " + e?.message); }
 };
-module.exports = { addTask, getTask, deleteTask, updateTask };
+
+const getTaskByID = async data => {
+    let id = data.id;
+    let command = '';
+
+    try {
+        command = `SELECT task.*, urd.user_name AS assignedToUser 
+                       FROM task 
+                       LEFT JOIN user_registration_details urd ON task.assignedTo = urd.id WHERE  task_id = ${id}`
+
+        // command = ` SELECT * from task where task_id = ${id}`
+        let result = await execCommand.execCommand(command)
+
+        return result
+    } catch (error) {
+        throw new Error("Error while getting the data" + error?.message)
+
+    }
+
+}
+module.exports = { addTask, getTask, deleteTask, updateTask, getTaskByID };

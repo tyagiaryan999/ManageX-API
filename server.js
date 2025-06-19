@@ -56,13 +56,13 @@ app.listen(PORT, () => {
 
 app.post("/URLlog", (req, res) => {
   const userData = req.body;
-  console.log("URLlog Data: ", userData);
+  // console.log("URLlog Data: ", userData);
   apiResponse(userData)
 
   res.status(200).json({ message: "User Submitted Successfully" });
 });
 if (!fs.existsSync(uploadDir)) {
-  console.log(`Upload directory doesn't exist: ${uploadDir}`);
+  // console.log(`Upload directory doesn't exist: ${uploadDir}`);
   fs.mkdirSync(uploadDir);
 }
 

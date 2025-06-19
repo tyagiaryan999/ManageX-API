@@ -6,7 +6,7 @@ const upload = require('../middleware/upload.js')
 router.post("/addUser", upload.single('userImage'), async (req, res, next) => {
     let data = req.body;
     const file = req.file;
-    console.log("AddUser Body", data)
+    // console.log("AddUser Body", data)
     if (file) {
         data.imagePath = file.filename;
     }
@@ -24,10 +24,10 @@ router.post("/addUser", upload.single('userImage'), async (req, res, next) => {
     }
 });
 router.post("/loginUser", async (req, res, next) => {
-    console.log("login details ")
+    // console.log("login details ")
     let data = req.body;
 
-    console.log("login details : ", data);
+    // console.log("login details : ", data);
 
 
     try {
@@ -70,9 +70,10 @@ router.post("/deleteUserById", async (req, res, next) => {
 });
 router.post("/updateUserById", async (req, res, next) => {
     let data = req.body;
-    console.log("Update User Data", data)
+    // console.log("Update User Data", data)
     try {
         let result = await userServices.updateUserById(data);
+        // console.log("UpdateUser Resulttt", result)
         res.status(200).json({
             data: result,
             message: "User Updated"
@@ -83,7 +84,7 @@ router.post("/updateUserById", async (req, res, next) => {
 });
 router.post("/getAllUser", async (req, res, next) => {
     let data = req.body;
-    console.log("upcomimg payload 11 " + data);
+    // console.log("upcomimg payload 11 " + data);
     try {
         let result = await userServices.getAllUser(data);
 
@@ -111,7 +112,7 @@ router.post("/userActivityInfo", async (req, res, next) => {
     const data = req.body
     try {
         let result = await userServices.userActivityInfo(data);
-        console.log("userActivityInfo Result", result)
+        // console.log("userActivityInfo Result", result)
         res.status(200).json({
             message: "userActivityInfo Data",
             data: result,

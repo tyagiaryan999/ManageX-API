@@ -100,7 +100,7 @@ const loginUser = async (payload) => {
 
     try {
         const result = await execCommand.execCommand(command);
-        console.log(result);
+        // console.log(result);
 
         if (!result || result.length === 0) {
             throw new Error('Invalid email or password');
@@ -153,6 +153,7 @@ const updateUserById = async (payload) => {
             whereQuery = `WHERE email='${data.email}'`
         }
         let finalCommand = `${command}${whereQuery}`
+        // console.log("UpdateUser Command", finalCommand)
         let result = await execCommand.execCommand(finalCommand);
         return result;
     }
@@ -180,6 +181,7 @@ const getUserById = async (payload) => {
     try {
         command = `SELECT * FROM user_registration_details WHERE email = '${data.email}';`;
         const result = await execCommand.execCommand(command);
+        console.log("getUserByID Command", command)
         console.log("returnnnnnn formmm getuserById" + result);
 
         return result;
@@ -356,7 +358,7 @@ const userActivityInfo = async (payload) => {
 
             const stringArray = JSON.parse(raw);
             jsonData = stringArray.filter(item => {
-                return item.email == data.email && item.time == data.activityDate;
+                return item.email == data.email && item.Date == data.activityDate;
             });
 
 
